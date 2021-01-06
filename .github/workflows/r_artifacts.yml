@@ -29,6 +29,7 @@ jobs:
       - name: Send init status
         if: ${{ always() }}
         run: |
+          $GITHUB_WORKSPACE/.ci/set_commit_status.sh "${{ github.workflow }}" "pending" "${{ github.event.client_payload.pr_sha }}"
           $GITHUB_WORKSPACE/.ci/append_comment.sh \
             "${{ github.event.client_payload.comment_number }}" \
             "Workflow **${{ github.workflow }}** has been triggered! 🚀\r\n${GITHUB_SERVER_URL}/microsoft/LightGBM/actions/runs/${GITHUB_RUN_ID}"
@@ -36,10 +37,8 @@ jobs:
         shell: bash
         id: build_package
         run: |
-          sh build-cran-package.sh || exit -1
-          LGB_VERSION=$(cat VERSION.txt | sed "s/rc/-/g")
-          ARTIFACT_NAME=lightgbm-${LGB_VERSION}-r-cran.tar.gz
-          mv lightgbm_${LGB_VERSION}.tar.gz ${ARTIFACT_NAME}
+          sh test_r_package_artifacts.sh || exit -1
+          ARTIFACT_NAME=CMakeIntegratedOpenCL.cmake
           echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
           echo "::set-output name=artifact_path::$(pwd)/${ARTIFACT_NAME}"
       - name: Upload package
@@ -50,6 +49,15 @@ jobs:
       - name: Send final status
         if: ${{ always() }}
         run: |
+          $GITHUB_WORKSPACE/.ci/set_commit_status.sh "${{ github.workflow }}" "${{ job.status }}" "${{ github.event.client_payload.pr_sha }}"
           $GITHUB_WORKSPACE/.ci/append_comment.sh \
             "${{ github.event.client_payload.comment_number }}" \
             "Status: ${{ job.status }}."
+      - name: Rerun main workflow
+        if: ${{ success() }}
+        run: |
+          python $GITHUB_WORKSPACE/.ci/rerun_workflow.py \
+            "optional_checks.yml" \
+            "${{ github.event.client_payload.pr_number }}" \
+            "${{ github.event.client_payload.pr_branch }}" \
+            || true

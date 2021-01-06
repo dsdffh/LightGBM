@@ -36,7 +36,7 @@ jobs:
         shell: bash
         id: build_package
         run: |
-          ./test_r_package_artifacts.sh || exit -1
+          ./.ci/test_r_package_artifacts.sh || exit -1
           ARTIFACT_NAME=CMakeIntegratedOpenCL.cmake
           echo "::set-output name=artifact_name::${ARTIFACT_NAME}"
           echo "::set-output name=artifact_path::$(pwd)/${ARTIFACT_NAME}"

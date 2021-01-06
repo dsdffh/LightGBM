@@ -44,4 +44,4 @@ curl -sL \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $SECRETS_WORKFLOW" \
   -d "$data" \
-  "${GITHUB_API_URL}/repos/microsoft/LightGBM/dispatches"
+  "${GITHUB_API_URL}/repos/StrikerRUS/LightGBM/dispatches"

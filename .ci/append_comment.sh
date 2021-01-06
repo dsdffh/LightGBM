@@ -28,7 +28,7 @@ body=$2
 old_comment_body=$(curl -sL \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $SECRETS_WORKFLOW" \
-  "${GITHUB_API_URL}/repos/microsoft/LightGBM/issues/comments/$comment_id" | \
+  "${GITHUB_API_URL}/repos/StrikerRUS/LightGBM/issues/comments/$comment_id" | \
   jq '.body')
 body=${body/failure/failure ❌}
 body=${body/error/failure ❌}
@@ -43,4 +43,4 @@ curl -sL \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $SECRETS_WORKFLOW" \
   -d "$data" \
-  "${GITHUB_API_URL}/repos/microsoft/LightGBM/issues/comments/$comment_id"
+  "${GITHUB_API_URL}/repos/StrikerRUS/LightGBM/issues/comments/$comment_id"
